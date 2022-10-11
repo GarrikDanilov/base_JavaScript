@@ -4,7 +4,7 @@ let fitlerPopup = document.querySelector('.filterPopup');
 let fitlerLabel = document.querySelector('.filterLabel');
 let filterIcon = document.querySelector('.filterIcon');
 
-fitlerLabel.addEventListener('click', function() {
+fitlerLabel.addEventListener('click', function () {
     fitlerPopup.classList.toggle('hidden');
     fitlerLabel.classList.toggle('filterLabelPink');
     filterIcon.classList.toggle('filterIconPink');
@@ -17,14 +17,47 @@ fitlerLabel.addEventListener('click', function() {
 });
 
 let filterHeaders = document.querySelectorAll('.filterCategoryHeader');
-filterHeaders.forEach(function(header) {
-    header.addEventListener('click', function(event) {
+filterHeaders.forEach(function (header) {
+    header.addEventListener('click', function (event) {
         event.target.nextElementSibling.classList.toggle('hidden');
     })
 });
 
 let filterSizes = document.querySelector('.filterSizes');
 let filterSizeWrap = document.querySelector('.filterSizeWrap');
-filterSizeWrap.addEventListener('click', function() {
+filterSizeWrap.addEventListener('click', function () {
     filterSizes.classList.toggle('hidden');
 });
+
+
+class Product {
+    constructor(productName, price) {
+        this.productName = productName;
+        this.count = 1;
+        this.price = price;
+        this.totalPrice = price;
+    }
+
+    incProduct() {
+        this.count += 1;
+        this.totalPrice += this.price;
+    }
+
+    getProductMarkup() { }
+}
+
+class UserCart {
+    constructor() {
+        this.products = [];
+    }
+
+    qetTotalCount() {
+        if (this.products.length === 0) {
+            return 0;
+        }
+
+        totalCount = 0;
+        this.products.forEach(item => this.totalCount += item.count);
+        return totalCount;
+    }
+}

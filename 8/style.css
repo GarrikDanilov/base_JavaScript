@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap");
+
 body {
     margin: 0;
     font-family: Lato, sans-serif;
@@ -41,6 +42,7 @@ body {
 }
 
 @media (min-width: 768px) {
+
     .userIcon,
     .cartIcon {
         display: inline;
@@ -73,6 +75,7 @@ body {
     top: -19px;
     font-size: 12px;
     line-height: 19px;
+    visibility: hidden;
 }
 
 .newArrivals {
@@ -192,12 +195,12 @@ body {
     margin-left: 9px;
 }
 
-.filtersRight > div:not(:last-child) {
+.filtersRight>div:not(:last-child) {
     margin-right: 15px;
 }
 
 @media (min-width: 375px) {
-    .filtersRight > div:not(:last-child) {
+    .filtersRight>div:not(:last-child) {
         margin-right: 24px;
     }
 }
@@ -327,7 +330,7 @@ body {
     color: #6f6e6e;
 }
 
-.filterSizes > div:not(:last-child) {
+.filterSizes>div:not(:last-child) {
     margin-bottom: 4px;
 }
 
@@ -623,16 +626,19 @@ body {
     font-family: inherit;
     opacity: 0.67;
 }
+
 .subscribeForm input::-moz-placeholder {
     color: #222224;
     font-family: inherit;
     opacity: 0.67;
 }
+
 .subscribeForm input:-ms-input-placeholder {
     color: #222224;
     font-family: inherit;
     opacity: 0.67;
 }
+
 .subscribeForm input:-moz-placeholder {
     color: #222224;
     font-family: inherit;
