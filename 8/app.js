@@ -30,8 +30,10 @@ filterSizeWrap.addEventListener('click', function () {
 });
 
 
+// Класс товара
 class Product {
-    constructor(productName, price) {
+    constructor(id, productName, price) {
+        this.id = id;
         this.productName = productName;
         this.count = 1;
         this.price = price;
@@ -45,57 +47,35 @@ class Product {
 
     getProductMarkup() {
         return `
-        <tr>
+        <tr name="product_${this.id}">
             <td>${this.productName}</td>
             <td>${this.count} шт.</td>
-            <td>$${this.price}</td>
-            <td>$${this.totalPrice}</td>
+            <td>$${this.price.toFixed(2)}</td>
+            <td>$${this.totalPrice.toFixed(2)}</td>
         </tr>
         `;
     }
 }
 
+// Класс корзины
 class UserCart {
     constructor(baseDiv) {
         this.products = [];
-        this.totalPrice = this.getTotalPrice();
+        this.totalCount = 0;
+        this.totalPrice = 0;
         baseDiv.insertAdjacentHTML("beforeend", `${this.getUserCartMarkup()}`);
         this.tableObj = baseDiv.querySelector('.cart__table');
         this.totalPriceObj = this.tableObj.querySelector('.total__price span');
     }
 
-    qetTotalCount() {
-        if (this.products.length === 0) {
-            return 0;
-        }
-
-        totalCount = 0;
-        this.products.forEach(item => totalCount += item.count);
-        return totalCount;
-    }
-
-    getTotalPrice() {
-        if (this.products.length === 0) {
-            return 0;
-        }
-
-        totalPrice = 0;
-        this.products.forEach(item => totalPrice += item.totalPrice);
-        return totalPrice;
-    }
-
-    /**
-     * 
-     * @param {Product} product 
-     */
-    updateTotalPrice(product) {
-        this.totalPrice += product.totalPrice;
+    isEmpty() {
+        return this.products.length === 0;
     }
 
     getUserCartMarkup() {
         return `
         <table class="cart__table">
-        <caption class="total__price">Товаров в корзине на сумму: <span>$${this.totalPrice}</span></caption>
+        <caption class="total__price">Товаров в корзине на сумму: <span>$${this.totalPrice.toFixed(2)}</span></caption>
         <tr>
             <th>Название товара</th>
             <th>Количество</th>
@@ -108,20 +88,79 @@ class UserCart {
 
     /**
      * 
-     * @param {Product} product 
+     * @param {Product} product товар
      */
     addProduct(product) {
         this.products.push(product);
-        this.updateTotalPrice(product);
-        this.totalPriceObj.textContent = `$${this.totalPrice}`;
+        this.totalPrice += product.price;
+        this.totalCount += 1;
+        this.totalPriceObj.textContent = `$${this.totalPrice.toFixed(2)}`;
         this.tableObj.insertAdjacentHTML("beforeend", `${product.getProductMarkup()}`);
+    }
+
+    /**
+     * 
+     * @param {Product} product товар
+     */
+    updateProduct(product) {
+        product.incProduct();
+        this.totalPrice += product.price;
+        this.totalCount += 1;
+        const productRow = this.tableObj.querySelector(`tr[name="product_${product.id}"]`);
+        productRow.children[1].innerText = `${product.count} шт.`;
+        productRow.children[3].innerText = `$${product.totalPrice.toFixed(2)}`;
+        this.totalPriceObj.textContent = `$${this.totalPrice.toFixed(2)}`;
     }
 }
 
+// Индикатор количества товаров в корзине
+const counter = document.querySelector('.cartIconWrap span');
+// Контейнер для позиционирования корзины
 const userCartBase = document.querySelector('.rightHeader');
+// Экземпляр корзины  
 const newCart = new UserCart(userCartBase);
 
-const prod1 = new Product('product 1', 100);
-newCart.addProduct(prod1);
-const prod2 = new Product('product 2', 50);
-newCart.addProduct(prod2);
+// Обработчик события нажатия на кнопку "Add to Cart"
+document.querySelectorAll('.featuredItem').forEach(function (item) {
+    item.addEventListener('click', function (event) {
+        if (!event.target.parentNode.classList.contains('featuredImgDark')) {
+            return;
+        }
+
+        const id = item.dataset.product_id;
+        if (newCart.isEmpty()) {
+            const name = item.querySelector('.featuredName').innerText;
+            const price = Number.parseFloat(item.querySelector('.featuredPrice').innerText.slice(1));
+
+            newCart.addProduct(new Product(id, name, price));
+            counter.innerText = '1';
+            counter.style.visibility = 'visible';
+            return;
+        }
+
+        const productInCart = newCart.products.find(item => item.id === id);
+        if (productInCart === undefined) {
+            const name = item.querySelector('.featuredName').innerText;
+            const price = Number.parseFloat(item.querySelector('.featuredPrice').innerText.slice(1));
+
+            newCart.addProduct(new Product(id, name, price));
+            counter.innerText = newCart.totalCount.toString();
+            return;
+        }
+
+        newCart.updateProduct(productInCart);
+        counter.innerText = newCart.totalCount.toString();
+    });
+})
+
+// Обработчик клика на корзине
+const cartObj = document.querySelector('.cart__table');
+let cartState = window.getComputedStyle(cartObj).display;
+document.querySelector('.cartIcon').addEventListener('click', function (event) {
+    if (newCart.isEmpty()) {
+        return;
+    }
+
+    cartState = cartState === "none" ? "table" : "none";
+    cartObj.style.display = cartState;
+});

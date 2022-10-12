@@ -727,7 +727,9 @@ body {
     font-size: 12px;
     background: white;
     border-collapse: collapse;
+    border: 2px solid #636363;
     min-width: 400px;
+    display: none;
 }
 
 th,
@@ -742,4 +744,5 @@ td {
     font-weight: bold;
     background: white;
     padding-top: 10px;
+    border: 2px solid #636363;
 }
