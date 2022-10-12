@@ -715,3 +715,31 @@ body {
         margin-top: 40px;
     }
 }
+
+.rightHeader {
+    position: relative;
+}
+
+.cart__table {
+    position: absolute;
+    top: 40px;
+    right: 2px;
+    font-size: 12px;
+    background: white;
+    border-collapse: collapse;
+    min-width: 400px;
+}
+
+th,
+td {
+    border-bottom: 2px solid gray;
+    text-align: center;
+}
+
+.total__price {
+    caption-side: bottom;
+    text-align: right;
+    font-weight: bold;
+    background: white;
+    padding-top: 10px;
+}
